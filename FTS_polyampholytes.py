@@ -1,6 +1,6 @@
 ###########################################################################
 # Field theoretic simulation (FTS) code for a polyampholyte solution.     #
-# The code contains routines for Complex-Langevin evolution using a       #
+# The code contains routines for Complex-Langevin (CL) evolution using a  #
 # semi-implicit integration scheme, and for computations of the chemical  #
 # potential and osmotic pressure. The code is used in the publication     #
 #                                                                         #
@@ -48,7 +48,6 @@ class PolySol:
         self.GT2_w   = ( self.k2*self.a**2/3. - 1./2. )*self.Gamma  # smearing in pressure
         self.GT2_psi = ( self.k2*self.a**2/3. - 1./6. )*self.Gamma  # smearing in pressure
 
-
         # Gaussian chain correlation functions in the k-space
         Gij = np.exp(-np.tensordot(np.arange(self.N), self.k2, axes=0)/6)
 
@@ -84,7 +83,7 @@ class PolySol:
         self.rhop = np.zeros( ( self.Nx, self.Nx, self.Nx ), dtype=complex ) + self.rhop0
         self.rhoc = np.zeros( ( self.Nx, self.Nx, self.Nx ), dtype=complex )
 
-    # taking Laplacian of x via Fourier transformation
+    # Taking Laplacian of x via Fourier transformation
     def lap(self, x):
         return -ift( self.k2 * ft( x ) ) 
     
@@ -113,11 +112,12 @@ class PolySol:
         self.rhop = self.rhop0 / self.N / self.Q * np.sum(qs, axis=0)
         self.rhoc = self.rhop0 / self.N / self.Q * qs.T.dot(self.sig).T 
 
-    # returns the polymer chemical potential for the current field configuration
+    # Returns the polymer chemical potential for the current field configuration
     def get_chem_pot( self ):
         mu_p = np.log( self.rhop0 / self.N ) - np.log( self.Q ) 
         return mu_p
 
+    # Returns the osmotic for the current field configuration
     def get_pressure( self ):
         ft_w   = ft( self.w )
         ft_psi = ft( self.psi )
@@ -148,13 +148,10 @@ class PolySol:
 
     # Returns a dictionary containing all parameters, useful for printing to a file for archiving
     def get_params( self ):
-
-        nP = self.rhop0 * self.V / self.N  # number of polymer chains in the system
-
         params = {
             "lB"    : self.lB    ,\
             "v"     : self.v     ,\
-            "rhop0"	: self.rhop0 ,\
+            "rhop0" : self.rhop0 ,\
             "N"     : self.N     ,\
             "V"     : self.V     ,\
             "L"     : self.L     ,\
@@ -162,9 +159,7 @@ class PolySol:
             "dx"    : self.dx    ,\
             "dV"    : self.dV    ,\
             "a"     : self.a     ,\
-            "np"    : nP         ,\
         }
-
         return params
 
 #---------------------------- Complex Langevin Time Evolution ----------------------------
@@ -211,24 +206,23 @@ if __name__ == "__main__":
 
     import CL_seq_list as sl
   
-    # CL time step
-    dt = 0.01            # Complex-Langevin time step
-    t_prod = int(5e4)    # Total number of time steps
+    dt = 0.01             # CL time step size
+    t_prod = int(5e4)     # Total number of time steps
 
-    lB = 0.5             # Bjerrum length
-    v  = 0.0068          # Excluded volume parameter
-    a  = 1./np.sqrt(6.)  # Smearing length
-    rhop0 = 0.2          # Polymer bead bulk density
+    lB  = 0.5             # Bjerrum length (inverse of the reduced temperature)
+    v   = 0.0068          # Excluded volume parameter
+    a   = 1./np.sqrt(6.)  # Smearing length
+    rho = 0.2             # Polymer bead bulk density, n * N / V
 
     sig, N, the_seq = sl.get_the_charge("sv20")
     print(the_seq, N)
  
-    # polymer solution object
-    PS = PolySol(sig, rhop0, lB, v, a , Nx=32)
+    # Polymer solution object
+    PS = PolySol(sig, rho, lB, v, a , Nx=32)
 
     run_label = "data/example_FTS"
 
-    # save parameter values
+    # Save parameter values
     params = PS.get_params()
     with open( run_label + "_params.txt" , 'w') as f:
         print(params, file=f)
@@ -240,22 +234,22 @@ if __name__ == "__main__":
     psi = init_size * ( np.random.randn( PS.Nx,PS.Nx,PS.Nx ) + \
                    1j * np.random.randn( PS.Nx,PS.Nx,PS.Nx ) )
 
-    w   -= np.mean(w) + 1j * rhop0 * v
+    w   -= np.mean(w) + 1j * rho * v
     psi -= np.mean(psi)
     PS.set_fields(w,psi)
 
+    # Compute the M^(-1) matrix used for semi-implicit CL evolution
     Minv = get_M_inv( PS, dt)
 
-    with open( run_label + "_evolution.txt" , 'w') as f:
+    with open( run_label + "_traj.txt" , 'w') as f:
         for t in range(t_prod):
-            if t %50 == 0:
+            if t %50 == 0: # Sample
                 mu = PS.get_chem_pot()
                 Pi = PS.get_pressure()
 
-                print(t, mu.real , mu.imag, Pi.real, Pi.imag) 
-                
                 f.write('{:.8e} {:.8e} {:.8e} {:.8e} {:.8e} {:.8e}'.format(t, t*dt, mu.real , mu.imag, Pi.real, Pi.imag ) )                 
                 f.write('\n')
                 f.flush()
 
+            # Take one CL time step
             CL_step_SI(PS, Minv, dt)
