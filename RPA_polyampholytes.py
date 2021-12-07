@@ -8,7 +8,11 @@
 #                                                                       #
 # This code is used in the publication                                  #
 #                                                                       #
-#    Lin Y, Wessén J, Pal T, Das S & Chan H S, XXXXX (2021)             #
+#    Y.-H. Lin, J. Wessén, T. Pal, S. Das and H.S. Chan (2021)            #
+#    Numerical Techniques for Applications of Analytical Theories to      #
+#    Sequence-Dependent Phase Separations of Intrinsically Disordered     #
+#    Proteins. Methods in Molecular Biology (Springer-Nature),            #
+#    accepted for publication.                                            #
 #                                                                       #
 # and follows the notation therein.                                     #
 #########################################################################
