@@ -6,11 +6,11 @@
 #                                                                         #
 # The code is used in the publication                                     #
 #                                                                         #
-#    Y.-H. Lin, J. Wessén, T. Pal, S. Das and H.S. Chan (2021)            #
+#    Y.-H. Lin, J. Wessén, T. Pal, S. Das and H.S. Chan (2022)            #
 #    Numerical Techniques for Applications of Analytical Theories to      #
 #    Sequence-Dependent Phase Separations of Intrinsically Disordered     #
 #    Proteins. Methods in Molecular Biology (Springer-Nature),            #
-#    accepted for publication.                                            #
+#    accepted for publication. (Pre-print available at arXiv:2201.01920)  #
 #                                                                         #
 # and follows the methods described therein.                              #
 ###########################################################################
