@@ -1,21 +1,21 @@
 
-#########################################################################
-# Random phase approximation (RPA) code for calculating the chemical    #
-# potential and osmotic pressure of a system of polyampholytes. The     #
-# 'main' function of this script contains a usage example of how the    #
-# functions of the PolySol_RPA object can be used to calculate          #
-# polyampholyte phase diagrams in RPA.                                  #
-#                                                                       #
-# This code is used in the publication                                  #
-#                                                                       #
-#    Y.-H. Lin, J. Wessén, T. Pal, S. Das and H.S. Chan (2021)            #
-#    Numerical Techniques for Applications of Analytical Theories to      #
-#    Sequence-Dependent Phase Separations of Intrinsically Disordered     #
-#    Proteins. Methods in Molecular Biology (Springer-Nature),            #
-#    accepted for publication.                                            #
-#                                                                       #
-# and follows the notation therein.                                     #
-#########################################################################
+##########################################################################
+# Random phase approximation (RPA) code for calculating the chemical     #
+# potential and osmotic pressure of a system of polyampholytes. The      #
+# 'main' function of this script contains a usage example of how the     #
+# functions of the PolySol_RPA object can be used to calculate           #
+# polyampholyte phase diagrams in RPA.                                   #
+#                                                                        #
+# This code is used in the publication                                   #
+#                                                                        #
+#    Y.-H. Lin, J. Wessén, T. Pal, S. Das and H.S. Chan (2022)           #
+#    Numerical Techniques for Applications of Analytical Theories to     #
+#    Sequence-Dependent Phase Separations of Intrinsically Disordered    #
+#    Proteins. Methods in Molecular Biology (Springer-Nature),           #
+#    accepted for publication. (Pre-print available at arXiv:2201.01920) #
+#                                                                        #
+# and follows the notation therein.                                      #
+##########################################################################
 
 import numpy as np
 import scipy.optimize as opt
