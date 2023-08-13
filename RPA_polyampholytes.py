@@ -1,21 +1,28 @@
-
-##########################################################################
-# Random phase approximation (RPA) code for calculating the chemical     #
-# potential and osmotic pressure of a system of polyampholytes. The      #
-# 'main' function of this script contains a usage example of how the     #
-# functions of the PolySol_RPA object can be used to calculate           #
-# polyampholyte phase diagrams in RPA.                                   #
-#                                                                        #
-# This code is used in the publication                                   #
-#                                                                        #
-#    Y.-H. Lin, J. Wessén, T. Pal, S. Das and H.S. Chan (2022)           #
-#    Numerical Techniques for Applications of Analytical Theories to     #
-#    Sequence-Dependent Phase Separations of Intrinsically Disordered    #
-#    Proteins. Methods in Molecular Biology (Springer-Nature),           #
-#    accepted for publication. (Pre-print available at arXiv:2201.01920) #
-#                                                                        #
-# and follows the notation therein.                                      #
-##########################################################################
+###########################################################################
+# This code analyzes the trajectory files produced by the accompanying    #
+# field theory simulation (FTS) code "FTS_trajectories_MPI.py". For each  #
+# temperature/Bjerrum length, the thermal average of the chemical         #
+# potential (mu) and osmotic pressure (Pi) are computed as a function of  #
+# polymer bead density, and written to a file ending with "_mu_Pi.txt".   #
+# The self-intersection points of these (mu(rho),Pi(rho)) curves are then #
+# numerically found, which are used to construct the binodal curves that  #
+# constitute the FTS phase diagrams.                                      #
+#                                                                         #
+# The code is used in the publication                                     #
+#                                                                         #
+#    Y.-H. Lin, J. Wessén, T. Pal, S. Das and H.S. Chan (2022)            #
+#    Numerical Techniques for Applications of Analytical Theories to      #
+#    Sequence-Dependent Phase Separations of Intrinsically Disordered     #
+#    Proteins.                                                            #
+#    In: Phase-Separated Biomolecular Condensates, Methods and Protocols; #
+#    Methods Mol. Biol;                                                   #
+#    Zhou, H.-X., Spille, J.-H., Banerjee, P. R., Eds.;                   #
+#    Springer-Nature, 2022; Vol. 2563, Chapter 3, pp 51−94,               #
+#    DOI: 10.1007/978-1-0716-2663-4_3.                                    #
+#    ( Pre-print available at arXiv:2201.01920 )                          #
+#                                                                         #
+# and follows the methods described therein.                              #
+###########################################################################
 
 import numpy as np
 import scipy.optimize as opt
