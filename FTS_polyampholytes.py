@@ -191,7 +191,7 @@ def CL_step_SI(PS, M_inv, dt, useSI=True):
     
     if useSI: # Semi-implicit CL step
         ft_dw, ft_dpsi = ft( dw ) , ft( dpsi )
-        dw_tmp   = M_inv[0,0] * ft_dw + M_inv[0,1] * ft_dw
+        dw_tmp   = M_inv[0,0] * ft_dw + M_inv[0,1] * ft_dpsi
         dpsi_tmp = M_inv[1,0] * ft_dw + M_inv[1,1] * ft_dpsi
  
         PS.w   += ift( dw_tmp ) 
