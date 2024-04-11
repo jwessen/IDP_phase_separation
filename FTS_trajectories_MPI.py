@@ -1,14 +1,8 @@
 ###########################################################################
-# This code analyzes the trajectory files produced by the accompanying    #
-# field theory simulation (FTS) code "FTS_trajectories_MPI.py". For each  #
-# temperature/Bjerrum length, the thermal average of the chemical         #
-# potential (mu) and osmotic pressure (Pi) are computed as a function of  #
-# polymer bead density, and written to a file ending with "_mu_Pi.txt".   #
-# The self-intersection points of these (mu(rho),Pi(rho)) curves are then #
-# numerically found, which are used to construct the binodal curves that  #
-# constitute the FTS phase diagrams.                                      #
-#                                                                         #
-# The code is used in the publication                                     #
+# This code performs parallelized FTS for different polymer densities,    #
+# suitable for running on a cluster. The output files contain             #
+# the chemical potential and osmotic pressure as a function  of CL time.  #
+# The code is a part of the publication:                                  #
 #                                                                         #
 #    Y.-H. Lin, J. Wessén, T. Pal, S. Das and H.S. Chan (2022)            #
 #    Numerical Techniques for Applications of Analytical Theories to      #

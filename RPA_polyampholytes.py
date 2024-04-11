@@ -1,12 +1,6 @@
 ###########################################################################
-# This code analyzes the trajectory files produced by the accompanying    #
-# field theory simulation (FTS) code "FTS_trajectories_MPI.py". For each  #
-# temperature/Bjerrum length, the thermal average of the chemical         #
-# potential (mu) and osmotic pressure (Pi) are computed as a function of  #
-# polymer bead density, and written to a file ending with "_mu_Pi.txt".   #
-# The self-intersection points of these (mu(rho),Pi(rho)) curves are then #
-# numerically found, which are used to construct the binodal curves that  #
-# constitute the FTS phase diagrams.                                      #
+# This code is used to compute the phase diagram of a polyampholyte       #
+# solution using the Random Phase Approximation (RPA).                    #
 #                                                                         #
 # The code is used in the publication                                     #
 #                                                                         #

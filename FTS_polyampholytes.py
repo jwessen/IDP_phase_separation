@@ -1,14 +1,12 @@
 ###########################################################################
-# This code analyzes the trajectory files produced by the accompanying    #
-# field theory simulation (FTS) code "FTS_trajectories_MPI.py". For each  #
-# temperature/Bjerrum length, the thermal average of the chemical         #
-# potential (mu) and osmotic pressure (Pi) are computed as a function of  #
-# polymer bead density, and written to a file ending with "_mu_Pi.txt".   #
-# The self-intersection points of these (mu(rho),Pi(rho)) curves are then #
-# numerically found, which are used to construct the binodal curves that  #
-# constitute the FTS phase diagrams.                                      #
-#                                                                         #
-# The code is used in the publication                                     #
+# This code performs the Complex Langevin (CL) time evolution of a        #
+# polymer solution of polyampholytes. The polymer is modelled as a        #
+# sequence of charged beads, with a given charge sequence. The code       #
+# uses the CL method to evolve the fields w and psi, which represent      #
+# the polymer bead and charge density, respectively. The polymer          #
+# solution is modelled in a cubic box of side length L, with Nx grid      #
+# points in each direction. The code is based on the methods described    #
+# in the publication:                                                     #
 #                                                                         #
 #    Y.-H. Lin, J. Wessén, T. Pal, S. Das and H.S. Chan (2022)            #
 #    Numerical Techniques for Applications of Analytical Theories to      #
@@ -189,6 +187,8 @@ def CL_step_SI(PS, M_inv, dt, useSI=True):
     dw   = -dt*( 1j*ift( PS.Gamma*ft( PS.rhop ) ) + PS.w/PS.v                         ) + eta_w
     dpsi = -dt*( 1j*ift( PS.Gamma*ft( PS.rhoc ) ) - PS.lap(PS.psi) / (4.*np.pi*PS.lB) ) + eta_psi
     
+    print(np.mean(np.abs(PS.w/PS.v)),np.mean(np.abs(- PS.lap(PS.psi) / (4.*np.pi*PS.lB))))
+
     if useSI: # Semi-implicit CL step
         ft_dw, ft_dpsi = ft( dw ) , ft( dpsi )
         dw_tmp   = M_inv[0,0] * ft_dw + M_inv[0,1] * ft_dpsi
@@ -208,32 +208,53 @@ def get_M_inv( PS, dt ):
     K12 = PS.Gamma**2 * PS.rhop0 * PS.gmc
     K22 = PS.Gamma**2 * PS.rhop0 * PS.gcc + PS.k2 / (4.*np.pi*PS.lB)
     K11[0,0,0] = 1. / PS.v
-  
+
     M = np.array( [ [ 1.+dt*K11 , dt*K12 ] , [ dt*K12 , 1.+dt*K22 ] ]  )
     det_M = M[0,0] * M[1,1] - M[0,1] * M[1,0]
     M_inv = np.array( [ [ M[1,1] , - M[0,1] ] , [ - M[1,0] , M[0,0] ] ] ) / det_M
+
+    print(M_inv[0,0,:,0,0])
+
 
     return M_inv
 
 #------------------------------------- Main function -------------------------------------
 
+def av_density_to_1d(rho_in):
+    rho = np.copy(rho_in)
+    while len(rho.shape)>1:
+        rho = np.mean(rho,axis=0)
+    return rho
+
+
 if __name__ == "__main__":
+
+    #### for plotting #####
+    import matplotlib.pyplot as plt
+    import matplotlib as mpl
+    mpl.rcParams['text.usetex'] = True
+    #matplotlib.rcParams['text.latex.unicode'] = True
+    plt.rcParams['font.family'] = 'serif'
+    plt.rcParams['font.size'] = 12
+    plt.rcParams['axes.linewidth'] = 0.8 
+    plt.rcParams['lines.linewidth'] = 3 
+    ######################
 
     import CL_seq_list as sl
   
     dt = 0.01             # CL time step size
     t_prod = int(5e4)     # Total number of time steps
 
-    lB  = 0.5             # Bjerrum length (inverse of the reduced temperature)
+    lB  = 0.38            # Bjerrum length (inverse of the reduced temperature)
     v   = 0.0068          # Excluded volume parameter
     a   = 1./np.sqrt(6.)  # Smearing length
-    rho = 0.2             # Polymer bead bulk density, n * N / V
+    rho = 0.1             # Polymer bead bulk density, n * N / V
 
     sig, N, the_seq = sl.get_the_charge("sv20")
     print(the_seq, N)
  
     # Polymer solution object
-    PS = PolySol(sig, rho, lB, v, a , Nx=32)
+    PS = PolySol(sig, rho, lB, v, a , Nx=8)
 
     run_label = "data/example_FTS"
 
@@ -267,4 +288,13 @@ if __name__ == "__main__":
                 f.flush()
 
             # Take one CL time step
-            CL_step_SI(PS, Minv, dt)
+            CL_step_SI(PS, Minv, dt, useSI=True)
+
+            if t%100==0:
+                rhob = av_density_to_1d(PS.rhop)
+                z = np.linspace(0,PS.L,PS.Nx) * 3.8
+                plt.plot(z,rhob.real,'-' ,color='C0')
+                plt.plot(z,rhob.imag,'--',color='C0')
+                plt.title("t=" + str(t) + ", t="+str(t*dt))
+
+                plt.show()
