@@ -1,6 +1,6 @@
 ## Field-theoretic Modelling of Polyampholyte Phase-Separation
 
-This repository contains Python codes for field-theoretic simulations (FTS) of polyampholyte (net charge neutral) polymers and phase diagram calculations in the random phase approximation (RPA). 
+This repository contains Python codes for field-theoretic simulations (FTS) and phase diagram calculations in the random phase approximation (RPA) for solutions for solutions of polyampholytes serving as coarse-grained models of intrinsically disordered proteins (IDPs). 
 
 The codes are published as a part of the following book chapter wherein intended usage, underlying theory and key references are given. 
 
