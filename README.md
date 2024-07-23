@@ -4,7 +4,7 @@ This repository contains Python codes for field-theoretic simulations (FTS) and 
 
 The codes are published as a part of the following book chapter wherein intended usage, underlying theory and key references are given. 
 
-**Numerical Techniques for Applications of Analytical Theories to Sequence-Dependent Phase Separations of Intrinsically Disordered Proteins
+*Numerical Techniques for Applications of Analytical Theories to Sequence-Dependent Phase Separations of Intrinsically Disordered Proteins*
 
 Y.-H. Lin*, J. Wessén*, T. Pal*, S. Das, H. S. Chan (*equal contribution)
 
